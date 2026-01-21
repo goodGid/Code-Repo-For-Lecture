@@ -35,7 +35,7 @@ public class AsyncConfig {
 
         // 핵심: MdcTaskDecorator 설정
         // 이 설정으로 @Async 사용 시 MDC가 자동으로 전파됨
-//        executor.setTaskDecorator(new MdcTaskDecorator());
+        executor.setTaskDecorator(new MdcTaskDecorator());
 
         executor.initialize();
         return executor;

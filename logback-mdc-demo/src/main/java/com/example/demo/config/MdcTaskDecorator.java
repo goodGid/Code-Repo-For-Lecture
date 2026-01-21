@@ -18,28 +18,28 @@ import java.util.Map;
  * 3. 새 스레드에서 실행 시 복사한 MDC 값 설정
  * 4. 실행 완료 후 MDC 정리
  */
-//public class MdcTaskDecorator implements TaskDecorator {
-//
-//    @Override
-//    public Runnable decorate(Runnable runnable) {
-//        // 1. 현재 스레드(요청 스레드)의 MDC 복사
-//        Map<String, String> contextMap = MDC.getCopyOfContextMap();
-//
-//        // 2. 새로운 Runnable로 감싸서 반환
-//        return () -> {
-//            try {
-//                // 3. 비동기 스레드에서 실행 전에 MDC 설정
-//                if (contextMap != null) {
-//                    MDC.setContextMap(contextMap);
-//                }
-//
-//                // 4. 원본 작업 실행
-//                runnable.run();
-//
-//            } finally {
-//                // 5. 작업 완료 후 MDC 정리
-//                MDC.clear();
-//            }
-//        };
-//    }
-//}
+public class MdcTaskDecorator implements TaskDecorator {
+
+    @Override
+    public Runnable decorate(Runnable runnable) {
+        // 1. 현재 스레드(요청 스레드)의 MDC 복사
+        Map<String, String> contextMap = MDC.getCopyOfContextMap();
+
+        // 2. 새로운 Runnable로 감싸서 반환
+        return () -> {
+            try {
+                // 3. 비동기 스레드에서 실행 전에 MDC 설정
+                if (contextMap != null) {
+                    MDC.setContextMap(contextMap);
+                }
+
+                // 4. 원본 작업 실행
+                runnable.run();
+
+            } finally {
+                // 5. 작업 완료 후 MDC 정리
+                MDC.clear();
+            }
+        };
+    }
+}

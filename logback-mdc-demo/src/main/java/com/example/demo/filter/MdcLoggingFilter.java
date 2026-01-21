@@ -37,7 +37,6 @@ public class MdcLoggingFilter extends OncePerRequestFilter {
     // MDC Key 상수 정의
     public static final String REQUEST_ID = "requestId";
     public static final String USER_ID = "userId";
-    public static final String CLIENT_IP = "clientIp";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
