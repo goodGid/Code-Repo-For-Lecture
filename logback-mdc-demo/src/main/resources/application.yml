@@ -31,18 +31,9 @@ spring:
     activate:
       on-profile: dev
 
-logging:
-  level:
-    com.example.demo: DEBUG
-
 ---
 # 운영 환경 설정
 spring:
   config:
     activate:
       on-profile: prod
-
-logging:
-  level:
-    root: INFO
-    com.example.demo: INFO

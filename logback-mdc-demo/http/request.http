@@ -3,3 +3,6 @@ GET http://localhost:8080/api/hello
 Content-Type: application/json
 X-User-Id: CustomID
 Authorization: Bearer your_access_token_here
+
+### log-levels
+GET http://localhost:8080/api/log-levels
