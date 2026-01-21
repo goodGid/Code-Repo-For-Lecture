@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--
+    =====================================================
+    Logback + MDC 개념 설명용 설정 파일
+    =====================================================
+
+    [Logback 이란?]
+    - SLF4J의 구현체로, Spring Boot의 기본 로깅 프레임워크
+    - Log4j의 후속 프로젝트로, 더 빠르고 유연함
+
+    [MDC (Mapped Diagnostic Context) 란?]
+    - 로그에 컨텍스트 정보를 추가할 수 있는 기능
+    - ThreadLocal 기반으로 동작하여 스레드별로 독립적인 값 유지
+    - 주요 사용 사례:
+      1. 요청 추적 ID (Request ID / Trace ID)
+      2. 사용자 ID
+      3. 클라이언트 IP
+      4. 세션 ID
+    -->
+
+    <!-- 콘솔 출력 설정 (기본) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--
+            [패턴 설명]
+            %d{HH:mm:ss.SSS} : 시간 (시:분:초.밀리초)
+            %thread          : 스레드 이름
+            %-5level         : 로그 레벨 (5자리, 왼쪽 정렬)
+            %logger{36}      : 로거 이름 (최대 36자)
+            %msg             : 로그 메시지
+            %n               : 줄바꿈
+            -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- MDC를 포함한 콘솔 출력 설정 -->
+    <appender name="CONSOLE_WITH_MDC" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--
+            [MDC 패턴 설명]
+            %X{key}   : MDC에서 특정 키의 값을 출력
+            %X        : MDC의 모든 키-값 쌍을 출력
+
+            아래 패턴에서:
+            %X{requestId} : 요청 추적 ID
+            %X{userId}    : 사용자 ID
+            %X{clientIp}  : 클라이언트 IP
+            -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] [RequestId: %X{requestId}] [UserId: %X{userId}] [IP: %X{clientIp}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- JSON 형식 출력 (운영 환경에서 유용) -->
+    <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <!--
+                JSON 형태로 출력하면 로그 수집/분석 도구에서 파싱하기 쉬움
+                (실제 운영에서는 logstash-logback-encoder 라이브러리 권장)
+                -->
+                <pattern>{"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}","level":"%level","requestId":"%X{requestId}","userId":"%X{userId}","clientIp":"%X{clientIp}","logger":"%logger","message":"%msg"}%n</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!-- 파일 출력 설정 (Rolling) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 일별 로그 파일 생성 -->
+            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 30일간 보관 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [RequestId: %X{requestId}] [UserId: %X{userId}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--
+    =====================================================
+    Spring Profile별 설정
+    =====================================================
+    -->
+
+    <!-- 개발 환경: MDC 포함 콘솔 출력 -->
+    <springProfile name="default | dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_WITH_MDC"/>
+        </root>
+
+        <!-- 특정 패키지 DEBUG 레벨 -->
+        <logger name="com.example.demo" level="DEBUG"/>
+    </springProfile>
+
+    <!-- 운영 환경: JSON 형식 + 파일 출력 -->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_JSON"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>

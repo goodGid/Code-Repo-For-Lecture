@@ -1,0 +1,48 @@
+# =====================================================
+# Logback + MDC 데모 설정
+# =====================================================
+
+spring:
+  application:
+    name: logback-mdc-demo
+
+server:
+  port: 8080
+
+# =====================================================
+# 로깅 설정
+# =====================================================
+# Spring Boot는 기본적으로 Logback을 사용
+# logback-spring.xml이 있으면 해당 설정을 우선 적용
+#
+# [참고] application.yml에서도 간단한 로깅 설정 가능:
+# logging:
+#   level:
+#     root: INFO
+#     com.example.demo: DEBUG
+#   pattern:
+#     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+# =====================================================
+
+---
+# 개발 환경 설정
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    com.example.demo: DEBUG
+
+---
+# 운영 환경 설정
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+logging:
+  level:
+    root: INFO
+    com.example.demo: INFO
