@@ -18,6 +18,10 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     // Logback은 spring-boot-starter-web에 기본 포함
     // 추가 설정 없이 바로 사용 가능
 

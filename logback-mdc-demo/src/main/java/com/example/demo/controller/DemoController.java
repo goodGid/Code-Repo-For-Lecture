@@ -2,8 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.service.AsyncDemoService;
 import com.example.demo.service.OrderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,19 +34,14 @@ import java.util.concurrent.CompletableFuture;
  *    curl http://localhost:8080/api/email/test@example.com/without-mdc
  *    curl http://localhost:8080/api/email/test@example.com/with-mdc
  */
+@Slf4j
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class DemoController {
-
-    private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 
     private final OrderService orderService;
     private final AsyncDemoService asyncDemoService;
-
-    public DemoController(OrderService orderService, AsyncDemoService asyncDemoService) {
-        this.orderService = orderService;
-        this.asyncDemoService = asyncDemoService;
-    }
 
     /**
      * 기본 엔드포인트 - MDC 동작 확인

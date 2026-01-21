@@ -4,8 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -28,11 +27,10 @@ import java.util.UUID;
  * - 로그 분석 시 특정 요청의 전체 흐름 파악
  * - 문제 발생 시 관련 로그만 필터링하여 조회
  */
+@Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // 가장 먼저 실행되도록 설정
 public class MdcLoggingFilter extends OncePerRequestFilter {
-
-    private static final Logger log = LoggerFactory.getLogger(MdcLoggingFilter.class);
 
     // MDC Key 상수 정의
     public static final String REQUEST_ID = "requestId";

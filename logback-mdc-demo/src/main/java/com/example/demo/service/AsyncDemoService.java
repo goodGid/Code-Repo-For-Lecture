@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,10 +18,9 @@ import java.util.concurrent.CompletableFuture;
  * 1. sendEmailWithoutMdc() - MDC 전파 안됨
  * 2. sendEmailWithMdc() - MDC 전파됨 (MdcTaskDecorator 사용)
  */
+@Slf4j
 @Service
 public class AsyncDemoService {
-
-    private static final Logger log = LoggerFactory.getLogger(AsyncDemoService.class);
 
     /**
      * MDC 전파 안되는 비동기 메서드
